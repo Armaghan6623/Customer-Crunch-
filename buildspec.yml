@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - AWS_REGION=${AWS_DEFAULT_REGION:-us-east-1}
+      - ECR_REPO_NAME=${ECR_REPOSITORY_NAME:-customer-churn-ecr}
+      - ECR_REPO_URI="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO_NAME"
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin "$ECR_REPO_URI"
+
+  build:
+    commands:
+      - echo Build started on $(date)
+      - docker build -t "$ECR_REPO_URI:latest" -f docker/Dockerfile .
+
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push "$ECR_REPO_URI:latest"
+      - echo Writing imagedefinitions.json...
+      - printf '[{"name":"%s","imageUri":"%s"}]' "${ECS_CONTAINER_NAME:-churn-app}" "$ECR_REPO_URI:latest" > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
+
