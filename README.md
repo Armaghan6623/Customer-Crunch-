@@ -1,21 +1,23 @@
-# Customer Churn Deployment
+---
+title: Customer Churn Prediction API
+emoji: 📉
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+app_port: 7860
+---
 
-Starter project scaffold for deploying a customer-churn ML model.
+# Customer Churn Prediction (Docker / Hugging Face Spaces)
 
-## Structure
-- `src/`: Flask app and inference utilities
-- `docker/`: Dockerfile
-- `terraform/`: Terraform IaC (placeholder)
-- `scripts/`: local validation scripts (placeholder)
+A small Flask API for predicting customer churn probability.
 
-## Quick start (local)
-1. Build and run the container:
-   ```bash
-   docker build -t churn-app ./docker
-   docker run -p 8080:8080 churn-app
-   ```
-2. Call health endpoint:
-   ```bash
-   curl http://localhost:8080/health
-   ```
+## Local run
+```bash
+docker build -t churn-app ./docker
+docker run -p 7860:7860 churn-app
+```
+
+## Endpoints
+- `GET /health`
+- `POST /predict` with JSON: `{ "customer_id": 123 }`
 

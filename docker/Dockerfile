@@ -10,8 +10,9 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY src /app/src
 
 # Flask via Gunicorn
-EXPOSE 8080
-ENV PORT=8080
+EXPOSE 7860
+ENV PORT=7860
 
-CMD ["gunicorn", "src.app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--threads", "4"]
+CMD ["gunicorn", "src.app:app", "--bind", "0.0.0.0:7860", "--workers", "2", "--threads", "4"]
+
 
